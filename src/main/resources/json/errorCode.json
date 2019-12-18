@@ -1,0 +1,32 @@
+{
+  "AUTH-PER-01": {
+    "code": "AUTH-PER-01",
+    "msg": "抱歉，您没有访问权限",
+    "innerMsg": "抱歉，您没有访问权限"
+  },
+  "AUTH-PER-02": {
+    "code": "AUTH-PER-02",
+    "msg": "获取权限列表失败",
+    "innerMsg": ""
+  },
+  "AUTH-LOGIN-01": {
+    "code": "AUTH-LOGIN-01",
+    "msg": "账号或密码不正确",
+    "innerMsg": ""
+  },
+  "AUTH-LOGIN-02": {
+    "code": "AUTH-LOGIN-02",
+    "msg": "请先登录",
+    "innerMsg": ""
+  },
+  "USER-SELECT-01": {
+    "code": "USER-SELECT-01",
+    "msg": "未找到该用户信息",
+    "innerMsg": ""
+  },
+  "BASE-REQUEST-01": {
+    "code": "BASE-REQUEST-01",
+    "msg": "错误的请求",
+    "innerMsg": ""
+  }
+}
