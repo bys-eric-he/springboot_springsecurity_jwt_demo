@@ -1,9 +1,8 @@
 package com.springsecurity.jwt.demo.core.exception;
 
+import com.springsecurity.jwt.demo.common.utils.ResultUtil;
 import com.springsecurity.jwt.demo.core.error.ErrorCache;
 import com.springsecurity.jwt.demo.core.error.ErrorCodeConstants;
-import com.springsecurity.jwt.demo.core.result.Result;
-import com.springsecurity.jwt.demo.common.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -50,7 +49,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({Exception.class})
-    public Result handleException(Exception e) {
+    public Object handleException(Exception e) {
         log.error("[handleException] ", e);
         return ResultUtil.failure(ErrorCodeConstants.BAD_REQUEST_ERROR, e.getMessage());
     }
@@ -63,7 +62,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({BizServiceException.class})
-    public Result serviceExceptionHandler(BizServiceException ex) {
+    public Object serviceExceptionHandler(BizServiceException ex) {
         String errorCode = ex.getErrCode();
         String msg = ex.getErrMsg() == null ? "" : ex.getErrMsg();
         String innerErrMsg;
@@ -94,7 +93,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    public Result handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    public Object handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         log.warn("[handleMissingServletRequestParameterException] 参数错误: " + e.getParameterName());
         return ResultUtil.failure(BASE_PARAM_ERR_CODE, BASE_PARAM_ERR_MSG);
     }
@@ -107,7 +106,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({HttpMessageNotReadableException.class})
-    public Result handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+    public Object handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.warn("[handleHttpMessageNotReadableException] 参数解析失败：", e);
         return ResultUtil.failure(BASE_PARAM_ERR_CODE, BASE_PARAM_ERR_MSG);
     }
@@ -120,7 +119,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public Object handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         String message = getBindResultMessage(result);
         log.warn("[handleMethodArgumentNotValidException] 参数验证失败：" + message);
@@ -142,7 +141,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    public Result handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+    public Object handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.warn("[handleMethodArgumentTypeMismatchException] 方法参数类型不匹配异常: ", e);
         return ResultUtil.failure(BASE_PARAM_ERR_CODE, BASE_PARAM_ERR_MSG);
     }
@@ -155,7 +154,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BindException.class})
-    public Result handleHttpMessageNotReadableException(BindException e) {
+    public Object handleHttpMessageNotReadableException(BindException e) {
         BindingResult result = e.getBindingResult();
         String message = getBindResultMessage(result);
         log.warn("[handleHttpMessageNotReadableException] 参数绑定失败：" + message);
@@ -170,7 +169,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ConstraintViolationException.class})
-    public Result handleServiceException(ConstraintViolationException e) {
+    public Object handleServiceException(ConstraintViolationException e) {
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         ConstraintViolation<?> violation = violations.iterator().next();
         String message = violation.getMessage();
@@ -186,7 +185,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class})
-    public Result handleValidationException(ValidationException e) {
+    public Object handleValidationException(ValidationException e) {
         log.warn("[handleValidationException] 参数验证失败：", e);
         return ResultUtil.failure(BASE_PARAM_ERR_CODE, BASE_PARAM_ERR_MSG);
     }
@@ -199,7 +198,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public Result handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public Object handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.warn("[handleHttpRequestMethodNotSupportedException] 不支持当前请求方法: ", e);
         return ResultUtil.failure(BASE_BAD_REQUEST_ERR_CODE, BASE_BAD_REQUEST_ERR_MSG);
     }
@@ -212,7 +211,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler({HttpMediaTypeNotSupportedException.class})
-    public Result handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+    public Object handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         log.warn("[handleHttpMediaTypeNotSupportedException] 不支持当前媒体类型: ", e);
         return ResultUtil.failure(BASE_BAD_REQUEST_ERR_CODE, BASE_BAD_REQUEST_ERR_MSG);
     }
@@ -225,7 +224,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({AccessDeniedException.class})
-    public Result handleHttpAccessDeniedException(AccessDeniedException e) {
+    public Object handleHttpAccessDeniedException(AccessDeniedException e) {
         log.warn("[handleHttpAccessDeniedException] 身份认证失败: ", e);
         return ResultUtil.failure(BASE_BAD_REQUEST_ERR_CODE, BASE_BAD_REQUEST_ERR_MSG);
     }

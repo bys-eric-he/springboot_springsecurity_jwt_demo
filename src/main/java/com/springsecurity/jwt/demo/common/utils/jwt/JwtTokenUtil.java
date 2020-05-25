@@ -64,7 +64,8 @@ public class JwtTokenUtil {
      * @param privateKey 私钥
      * @return token
      */
-    public static String generateToken(String username, Map<String, Object> map, Long expireMill, RSAPublicKey publicKey, RSAPrivateKey privateKey) {
+    public static String generateToken(String username, Map<String, Object> map, Long expireMill,
+                                       RSAPublicKey publicKey, RSAPrivateKey privateKey) {
         if (expireMill == null) {
             expireMill = KEEP_ALIVE_TIME;
         }
@@ -235,7 +236,9 @@ public class JwtTokenUtil {
         hmacDemo();
     }
 
-
+    /**
+     * 使用公钥密钥加密
+     */
     public static void rsaDemo() {
         //生成rsa的key
         //生成公私钥文件
@@ -258,7 +261,8 @@ public class JwtTokenUtil {
         String generateToken = generateToken("heyong_1988", map, 1000L * 60, rsaPublicKey, rsaPrivateKey);
         System.out.println("generateToken = " + generateToken);
 
-        String sign = "eyJhbGciOiJSUzI1NiJ9.eyJuYW1lIjoiemdkIiwiaXNzIjoiemdkIiwic3ViIjoiYWFhIiwiZXhwIjoxNTYzNDE0NTAxLCJpYXQiOjE1NjMzNTQ1MDEsImFnZSI6IjE4In0.UV1jh0B2H8b58Icn8vBoqsG0M2vaVtJcQ0q8aD1WsAnVlDbBEEXNTM_1_8chuFWvd7GGlpVNSapvfiWD6e5CbnDsYaWx1dg07RHGcV-CbLHCwY03TkLSkDHUbxQVC-lMJdjWkazVY8Mdx_j-3O16VGmVRMy768t-SezQQPPRYNg";
+        String sign = "eyJhbGciOiJSUzI1NiJ9" +
+                ".eyJuYW1lIjoiemdkIiwiaXNzIjoiemdkIiwic3ViIjoiYWFhIiwiZXhwIjoxNTYzNDE0NTAxLCJpYXQiOjE1NjMzNTQ1MDEsImFnZSI6IjE4In0.UV1jh0B2H8b58Icn8vBoqsG0M2vaVtJcQ0q8aD1WsAnVlDbBEEXNTM_1_8chuFWvd7GGlpVNSapvfiWD6e5CbnDsYaWx1dg07RHGcV-CbLHCwY03TkLSkDHUbxQVC-lMJdjWkazVY8Mdx_j-3O16VGmVRMy768t-SezQQPPRYNg";
 
         boolean isValidate = validateToken(generateToken, rsaPublicKey, rsaPrivateKey);
         System.out.println("b = " + isValidate);
