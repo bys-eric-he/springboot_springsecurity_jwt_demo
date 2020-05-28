@@ -31,6 +31,10 @@ import java.util.Collections;
  */
 @Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
+    //@Autowired
+    //private UserSessionService userSessionService;
+
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer";
 
@@ -93,9 +97,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             );
         }
 
-        /*
+
         //避免每次请求都请求数据库查询用户信息，从缓存中查询
-        UserDetails userDetails = userSessionService.getSessionByUsername(username);
+        /*UserDetails userDetails = userSessionService.getSessionByUsername(username);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             //UserDetails userDetails = customerUserDetailService.loadUserByUsername(username);
             if (userDetails != null) {
@@ -104,8 +108,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
                 }
             }
-        }
-        */
+        }*/
+
 
         return null;
     }

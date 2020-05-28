@@ -1,6 +1,8 @@
 package com.springsecurity.jwt.demo.web.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springsecurity.jwt.demo.common.utils.ResponseUtil;
+import com.springsecurity.jwt.demo.common.utils.ResultUtil;
 import com.springsecurity.jwt.demo.web.auth.user.CustomerUserDetails;
 import com.springsecurity.jwt.demo.web.auth.user.UserSessionService;
 import com.springsecurity.jwt.demo.web.auth.user.UserTokenManager;
@@ -26,16 +28,15 @@ import java.io.IOException;
 public class CustomerAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private UserTokenManager userTokenManager;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                        Authentication authentication) throws IOException, ServletException {
         log.info("登陆成功...");
         CustomerUserDetails principal = (CustomerUserDetails) authentication.getPrincipal();
         //保存用户信息到会话
         userTokenManager.awardAccessToken(principal, false);
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(authentication));
+
+        ResponseUtil.out(200, ResultUtil.success(principal));
     }
 }

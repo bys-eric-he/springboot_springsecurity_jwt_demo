@@ -30,7 +30,6 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-
         CustomerUserDetails customerUserDetails = (CustomerUserDetails) userDetails;
 
         if (!passwordEncoder.matches(password, customerUserDetails.getPassword())) {

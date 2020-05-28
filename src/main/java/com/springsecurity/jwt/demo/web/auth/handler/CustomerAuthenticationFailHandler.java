@@ -22,15 +22,10 @@ import java.io.IOException;
 @Component
 public class CustomerAuthenticationFailHandler implements AuthenticationFailureHandler {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-        ResponseUtil.out(401, ResultUtil.failure(ErrorCodeConstants.LOGIN_UNMATCH_ERROR));
-        log.info("登录失败");
-        response.setStatus(400);
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(e));
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException authenticationException) throws IOException, ServletException {
+        ResponseUtil.out(401, ResultUtil.failure(ErrorCodeConstants.LOGIN_UNMATCH_ERROR,
+                authenticationException.getMessage()));
     }
 }

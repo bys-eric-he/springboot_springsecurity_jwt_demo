@@ -32,8 +32,6 @@ public class ResultUtil {
         return new Result<>(SUCCESS_CODE, null, null, data);
     }
 
-
-
     /**
      * 返回失败result
      * @param <T>
@@ -43,7 +41,6 @@ public class ResultUtil {
         return failure(BASE_ERROR_CODE, BASE_ERROR_MSG,null);
     }
 
-
     /**
      * 返回失败result
      * @param <T>
@@ -52,8 +49,6 @@ public class ResultUtil {
     public static <T>  Result<T> failure(String errCode){
         return failure(errCode,null,null);
     }
-
-
 
     /**
      * 返回失败result
