@@ -1,16 +1,11 @@
 package com.springsecurity.jwt.demo.web.auth.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springsecurity.jwt.demo.common.utils.ResponseUtil;
 import com.springsecurity.jwt.demo.common.utils.ResultUtil;
 import com.springsecurity.jwt.demo.web.auth.user.CustomerUserDetails;
-import com.springsecurity.jwt.demo.web.auth.user.UserSessionService;
 import com.springsecurity.jwt.demo.web.auth.user.UserTokenManager;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,6 +17,7 @@ import java.io.IOException;
 
 /**
  * 登录成功处理类,登录成功后会调用里面的方法
+ * 在配置中指定.formLogin().loginPage("登录页面.html").loginProcessingUrl("/login")的行为登录成功才会触发这个Handler
  */
 @Slf4j
 @Component

@@ -1,11 +1,9 @@
 package com.springsecurity.jwt.demo.web.auth.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springsecurity.jwt.demo.common.utils.ResponseUtil;
 import com.springsecurity.jwt.demo.common.utils.ResultUtil;
 import com.springsecurity.jwt.demo.core.error.ErrorCodeConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;

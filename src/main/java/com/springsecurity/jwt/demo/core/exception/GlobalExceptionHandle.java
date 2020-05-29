@@ -43,7 +43,7 @@ public class GlobalExceptionHandle {
 
     /**
      * 顶级的异常处理
-     * 捕获异常会导致权限Handler无法拦截
+     * 捕获异常会导致Spring Security权限Handler无法拦截
      * @param e
      * @return
      */

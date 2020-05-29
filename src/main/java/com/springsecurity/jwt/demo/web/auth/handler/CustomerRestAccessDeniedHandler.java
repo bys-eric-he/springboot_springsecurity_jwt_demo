@@ -23,7 +23,7 @@ public class CustomerRestAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("authentication Denied, reason: " + accessDeniedException.getMessage());
+        log.error("Authentication Denied, Reason: " + accessDeniedException.getMessage());
         ResponseUtil.out(403, ResultUtil.failure(ErrorCodeConstants.PERMISSION_DENY,
                 accessDeniedException.getMessage()));
     }

@@ -2,10 +2,7 @@ package com.springsecurity.jwt.demo.web.config;
 
 import com.springsecurity.jwt.demo.web.auth.encoder.MyAesPasswordEncoder;
 import com.springsecurity.jwt.demo.web.auth.filter.CustomerJwtAuthenticationTokenFilter;
-import com.springsecurity.jwt.demo.web.auth.filter.JWTAuthenticationFilter;
-import com.springsecurity.jwt.demo.web.auth.filter.JWTAuthorizationFilter;
 import com.springsecurity.jwt.demo.web.auth.handler.*;
-import com.springsecurity.jwt.demo.web.auth.provider.LoginAuthenticationProvider;
 import com.springsecurity.jwt.demo.web.auth.user.CustomerUserDetailService;
 import com.springsecurity.jwt.demo.web.config.properties.IgnoreUrlsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,19 +123,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()//需要认证
                 .and()
                 .formLogin()
+                // 配置登录页面
+                //.loginPage("/sys/login")
+                //.loginProcessingUrl("/doLogin")
+                // 使用forward的方式，能拿到具体失败的原因,并且会将错误信息以SPRING_SECURITY_LAST_EXCEPTION的key的形式将AuthenticationException
+                // 对象保存到request域中
+                //.failureForwardUrl("/sys/loginFail")
+                // 如果直接访问登录页面，则登录成功后重定向到这个页面，否则跳转到之前想要访问的页面.
+                //.defaultSuccessUrl("/public/login/ok.html")
                 .permitAll()
                 .successHandler(customerAuthenticationSuccessHandler)
                 .failureHandler(customerAuthenticationFailHandler)
                 .permitAll()
 
                 .and()
+                //logout默认的url是 /logout,如果csrf启用，则请求方式是POST，否则请求方式是GET、POST、PUT、DELETE
                 .logout()
                 .logoutSuccessHandler(customerLogoutSuccessHandler)
 
                 .and()
                 //.addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 //.addFilter(new JWTAuthorizationFilter(authenticationManager()))
-
+                // 禁用csrf模式
                 .csrf().disable();
     }
 

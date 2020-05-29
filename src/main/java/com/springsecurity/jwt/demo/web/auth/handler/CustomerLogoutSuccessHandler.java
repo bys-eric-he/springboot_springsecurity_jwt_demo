@@ -26,12 +26,12 @@ public class CustomerLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (authentication != null) {
-            Object principal1 = authentication.getPrincipal();
-            if (principal1 instanceof CustomerUserDetails) {
-                CustomerUserDetails principal = (CustomerUserDetails) principal1;
+            Object principalTemp = authentication.getPrincipal();
+            if (principalTemp instanceof CustomerUserDetails) {
+                CustomerUserDetails principal = (CustomerUserDetails) principalTemp;
                 //清除session会话信息
                 userSessionService.destroySession(principal.getUsername());
-                ResponseUtil.out(ResultUtil.success("Logout Success!"));
+                ResponseUtil.out(ResultUtil.success("注销token成功!"));
             }
         }
         ResponseUtil.out(ResultUtil.failure(ErrorCodeConstants.BAD_REQUEST_ERROR));

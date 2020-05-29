@@ -31,7 +31,6 @@ import java.io.IOException;
 /**
  * 定义我们自己的JWT拦截器，在请求到达目标之前对Token进行校验
  * 在请求过来的时候,解析请求头中的token,再解析token得到用户信息,再存到SecurityContextHolder中
- *
  */
 @Slf4j
 @Component
@@ -48,7 +47,7 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        //请求头为 accessToken
+        //请求头为 access Token
         //请求体为 Bearer token
         String authHeader = request.getHeader(userAuthProperties.getTokenHeader());
 
@@ -61,20 +60,20 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
             try {
                 claims = JwtTokenUtil.parseToken(authToken);
                 username = claims.getSubject();
-            } catch (ExpiredJwtException e) {
+            } catch (ExpiredJwtException expiredJwtException) {
                 //token过期
-                claims = e.getClaims();
+                claims = expiredJwtException.getClaims();
                 username = claims.getSubject();
                 CustomerUserDetails customerUserDetails = userSessionService.getSessionByUsername(username);
-                if (customerUserDetails != null){
+                if (customerUserDetails != null) {
                     //session未过期，比对时间戳是否一致，是则重新颁发token
-                    if (isSameTimestampToken(username,e.getClaims())){
-                        userTokenManager.awardAccessToken(customerUserDetails,true);
-                        //直接设置响应码为201,直接返回
-                        return;
-                    }else{
-                        //时间戳不一致.无效token,无法刷新token,响应码401,前端跳转登录页
-                        ResponseUtil.out(HttpStatus.UNAUTHORIZED.value(), ResultUtil.failure(ErrorCodeConstants.REQUIRED_LOGIN_ERROR));
+                    if (isSameTimestampToken(username, expiredJwtException.getClaims())) {
+                        userTokenManager.awardAccessToken(customerUserDetails, true);
+                    }
+                    else{
+                        ResponseUtil.out(HttpStatus.UNAUTHORIZED.value(),
+                                ResultUtil.failure(ErrorCodeConstants.REQUIRED_LOGIN_ERROR,
+                                        expiredJwtException.getMessage()));
                         return;
                     }
                 }else{
@@ -82,6 +81,7 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     chain.doFilter(request, response);
                     return;
                 }
+
             }
 
             //避免每次请求都请求数据库查询用户信息，从缓存中查询
@@ -89,10 +89,11 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 //UserDetails userDetails = customerUserDetailService.loadUserByUsername(username);
                 if (userDetails != null) {
-                    if (JwtTokenUtil.validateToken(authToken, userDetails)){
+                    if (JwtTokenUtil.validateToken(authToken, userDetails)) {
                         //必须token解析的时间戳和session保存的一致
                         UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+                                new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
+                                        userDetails.getAuthorities());
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                         //如果有accessToken的请求头，取出token，解析token，解析成功说明token正确，将解析出来的用户信息放到SpringSecurity的上下文中
@@ -108,7 +109,8 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
         如果有accessToken的请求头（可以自已定义名字），取出token，解析token，解析成功说明token正确，将解析出来的用户信息放到SpringSecurity的上下文中
         如果有accessToken的请求头，解析token失败（无效token，或者过期失效），取不到用户信息，放行
         没有accessToken的请求头，放行，这里可能有人会疑惑，为什么token失效都要放行呢？
-        这是因为SpringSecurity会自己去做登录的认证和权限的校验，靠的就是我们放在SpringSecurity上下文中的SecurityContextHolder.getContext().setAuthentication(authentication);
+        这是因为SpringSecurity会自己去做登录的认证和权限的校验，靠的就是我们放在SpringSecurity上下文中的SecurityContextHolder.getContext()
+        .setAuthentication(authentication);
         没有拿到authentication，放行了，SpringSecurity还是会走到认证和校验，这个时候就会发现没有登录没有权限，就会被AuthenticationEntryPoint实现类拦截。
         **/
         chain.doFilter(request, response);
@@ -116,11 +118,12 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     /**
      * 判断是否同一个时间戳
+     *
      * @param username
      * @param claims
      * @return
      */
-    private boolean isSameTimestampToken(String username, Claims claims){
+    private boolean isSameTimestampToken(String username, Claims claims) {
         Long timestamp = userSessionService.getTokenTimestamp(username);
         Long jwtTimestamp = (Long) claims.get(SecurityConstants.TIME_STAMP);
         return timestamp.equals(jwtTimestamp);
