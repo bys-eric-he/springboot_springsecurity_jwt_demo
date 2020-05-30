@@ -6,22 +6,21 @@ import com.springsecurity.jwt.demo.common.constants.SecurityConstants;
 import com.springsecurity.jwt.demo.common.constants.UserConstants;
 import com.springsecurity.jwt.demo.common.utils.encrypt.AESUtil;
 import com.springsecurity.jwt.demo.common.utils.encrypt.RSAUtil;
-import com.springsecurity.jwt.demo.core.exception.BizServiceException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * jwt来生成token和解析token
@@ -31,7 +30,7 @@ public class JwtTokenUtil {
     /**
      * 默认token过期时间1小时 单位 毫秒
      */
-    private static long KEEP_ALIVE_TIME = 60 * 60 * 1000L;
+    private static final long KEEP_ALIVE_TIME = 60 * 60 * 1000L;
 
     private static final String PATH = "/home/eric/IdeaProjects/keys";
 

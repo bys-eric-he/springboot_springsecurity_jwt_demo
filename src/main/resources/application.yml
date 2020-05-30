@@ -64,6 +64,17 @@ user-auth:
 secure:
   ignored:
     urls: #安全路径白名单
+      - /ignore/**
+      - /login
+      - /logout
+      - /user/login
+      - /user/logout
+      - /user/register
+      - /user/refresh-token
+      - /**/register/**
+    resources:
+      - /static/**
+      - /img/**
       - /swagger-ui.html
       - /swagger-resources/**
       - /swagger/**
@@ -73,15 +84,3 @@ secure:
       - /**/*.png
       - /**/*.ico
       - /webjars/springfox-swagger-ui/**
-      - /actuator/**
-      - /druid/**
-      - /admin/login
-      - /admin/register
-      - /ignore/**
-      - /login
-      - /logout
-      - /user/login
-      - /user/logout
-      - /user/register
-      - /user/refresh-token
-      - /**/register/**

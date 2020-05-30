@@ -16,5 +16,13 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "secure.ignored")
 public class IgnoreUrlsProperties {
+    /**
+     * 接口资源
+     */
     private List<String> urls = new ArrayList<>();
+
+    /**
+     * 静态资源
+     */
+    private List<String> resources = new ArrayList<>();
 }

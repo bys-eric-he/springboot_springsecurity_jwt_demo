@@ -78,6 +78,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
+     * Spring Security两种资源放行策略, 通过HttpSecurity这种方式过虑是走Spring Security过虑器链，在过虑器链中给请求放行。
+     * 有的资源放行是必须要走HttpSecurity这种方式的，比如API登录接口这种非静态资源，因为在过虑过程中还有其他事情要做。
      * antMatchers: ant的通配符规则
      * ?	匹配任何单字符
      * *	匹配0或者任意数量的字符，不包含"/"
@@ -105,8 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests();
 
         //这里表示不需要权限校验
-        ignoreUrlsProperties.getUrls().forEach(url->registry.antMatchers(url).permitAll());
-
+        ignoreUrlsProperties.getUrls().forEach(url -> registry.antMatchers(url).permitAll());
 
         httpSecurity
                 //登录后,访问没有权限请求处理
@@ -148,10 +149,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable();
     }
 
+    /**
+     * Spring Security 两种资源放行策略
+     * 通过WebSecurity这种方法不走Spring Security过虑器链，通常静态资源可以使用这种方式过虑放行，因为这些资源不需要权限就可以访问。
+     *
+     * @param web
+     * @throws Exception
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         //权限控制需要忽略所有静态资源，不然登录页面未登录状态无法加载css等静态资源
-        web.ignoring().mvcMatchers("/static/**", "/img/**");
+        //web.ignoring().mvcMatchers("/static/**", "/img/**");
+        ignoreUrlsProperties.getResources().forEach(resource -> web.ignoring().antMatchers(resource));
     }
 
     @Bean
