@@ -2,12 +2,14 @@ package com.springsecurity.jwt.demo.web.config;
 
 import com.springsecurity.jwt.demo.web.auth.encoder.MyAesPasswordEncoder;
 import com.springsecurity.jwt.demo.web.auth.filter.CustomerJwtAuthenticationTokenFilter;
+import com.springsecurity.jwt.demo.web.auth.filter.JWTAuthenticationFilter;
 import com.springsecurity.jwt.demo.web.auth.handler.*;
 import com.springsecurity.jwt.demo.web.auth.user.CustomerUserDetailService;
 import com.springsecurity.jwt.demo.web.config.properties.IgnoreUrlsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +24,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * 将处理器和我们的Jwt拦截器添加到Spring Security的配置中
+ * 配置SpringSecurity,将处理器和我们的Jwt拦截器添加到Spring Security的配置中
  */
 @Configuration
 @EnableWebSecurity
@@ -114,9 +116,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(customerRestAccessDeniedHandler)
                 //匿名访问,没有权限的处理类
                 .authenticationEntryPoint(customerAuthenticationEntryPoint);
+        //将自定义的OncePerRequestFilter过虑器加入到Security执行链中，解析过来的请求是否有token
         httpSecurity
-                //使用jwt的Authentication,来解析过来的请求是否有token
                 .addFilterBefore(customerJwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        //将自定义UsernamePasswordAuthenticationFilter过虑器加入到Security执行链中，实现用户名、密码登录验证
+        httpSecurity
+                .addFilterAt(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         httpSecurity
                 //对请求的授权
                 .authorizeRequests()
@@ -124,8 +129,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()//需要认证
                 .and()
                 .formLogin()
-                // 配置登录页面
-                //.loginPage("/sys/login")
+                // 配置登录页面 在 Spring Security 中，如果我们不做任何配置，默认的登录页面和登录接口的地址都是 /login，也就是说，默认会存在如下两个请求：
+                // GET http://localhost:8089/login
+                // POST http://localhost:8089/login
+                // 当我们配置了 loginPage 为 /login.html 之后，这个配置从字面上理解，就是设置登录页面的地址为 /login.html。
+                // 实际上它还有一个隐藏的操作，就是登录接口地址也设置成 /login.html 了。
+                // 换句话说，新的登录页面和登录接口地址都是 /login.html，现在存在如下两个请求：
+                // GET http://localhost:8089/login.html
+                // POST http://localhost:8089/login.html
+                // 前面的 GET 请求用来获取登录页面，后面的 POST 请求用来提交登录数据。
+                //.loginPage("/login.html")
+                // 在 SecurityConfig 中，我们可以通过 loginProcessingUrl 方法来指定登录接口地址,这样配置之后，登录页面地址和登录接口地址就分开了，各是各的。
                 //.loginProcessingUrl("/doLogin")
                 // 使用forward的方式，能拿到具体失败的原因,并且会将错误信息以SPRING_SECURITY_LAST_EXCEPTION的key的形式将AuthenticationException
                 // 对象保存到request域中
@@ -164,10 +178,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
     }
 
+    /**
+     * 将JWTAuthenticationFilter过虑器注册到容器中
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JWTAuthenticationFilter filter = new JWTAuthenticationFilter(authenticationManagerBean());
+        filter.setAuthenticationManager(authenticationManagerBean());
+        filter.setAuthenticationSuccessHandler(customerAuthenticationSuccessHandler);
+        filter.setAuthenticationFailureHandler(customerAuthenticationFailHandler);
+        return filter;
+    }
 }

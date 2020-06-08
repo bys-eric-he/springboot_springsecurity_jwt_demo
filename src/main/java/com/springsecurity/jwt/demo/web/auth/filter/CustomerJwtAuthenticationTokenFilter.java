@@ -47,10 +47,7 @@ public class CustomerJwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        //请求头为 access Token
-        //请求体为 Bearer token
         String authHeader = request.getHeader(userAuthProperties.getTokenHeader());
-
         if (authHeader != null && authHeader.startsWith(userAuthProperties.getTokenPrefix())) {
             //请求头有token
             final String authToken = authHeader.substring(userAuthProperties.getTokenPrefix().length());

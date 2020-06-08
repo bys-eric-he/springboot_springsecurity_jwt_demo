@@ -1,19 +1,11 @@
 package com.springsecurity.jwt.demo.web.auth.filter;
 
 import com.springsecurity.jwt.demo.common.utils.jwt.JwtTokenUtil;
-import com.springsecurity.jwt.demo.web.auth.user.UserSessionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -21,13 +13,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Collection;
 import java.util.Collections;
 
 /**
- * 验证用户权限的拦截器
- * 只要告诉spring-security该用户是否已登录，是什么角色，拥有什么权限就可以了
+ * JWTAuthenticationFilter登录成功后，将会进入JWTAuthorizationFilter验证用户权限的拦截器
+ * 登录成功之后走此类进行鉴权操作，只要告诉spring-security该用户是否已登录，是什么角色，拥有什么权限就可以了
  */
 @Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {

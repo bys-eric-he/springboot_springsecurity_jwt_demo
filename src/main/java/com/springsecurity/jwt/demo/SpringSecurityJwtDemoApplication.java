@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ComSpringsecurityJwtDemoApplication {
+public class SpringSecurityJwtDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ComSpringsecurityJwtDemoApplication.class, args);
+        SpringApplication.run(SpringSecurityJwtDemoApplication.class, args);
     }
 
 }
