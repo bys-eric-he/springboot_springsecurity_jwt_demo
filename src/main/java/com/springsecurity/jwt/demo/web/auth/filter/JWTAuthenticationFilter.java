@@ -2,7 +2,10 @@ package com.springsecurity.jwt.demo.web.auth.filter;
 
 import com.springsecurity.jwt.demo.common.constants.SecurityConstants;
 import com.springsecurity.jwt.demo.common.constants.UserConstants;
+import com.springsecurity.jwt.demo.common.utils.ResponseUtil;
+import com.springsecurity.jwt.demo.common.utils.ResultUtil;
 import com.springsecurity.jwt.demo.common.utils.jwt.JwtTokenUtil;
+import com.springsecurity.jwt.demo.core.error.ErrorCodeConstants;
 import com.springsecurity.jwt.demo.web.auth.user.CustomerUserDetails;
 import com.springsecurity.jwt.demo.web.auth.user.UserSessionService;
 import lombok.extern.slf4j.Slf4j;
@@ -158,7 +161,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     * successfulAuthentication：用户成功登录后，这个方法会被调用
+     * successfulAuthentication 用户成功登录后，这个方法会被调用
      * 我们在这个方法里生成token并返回
      *
      * @param request
@@ -203,7 +206,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     * 验证失败时候调用的方法
+     * unsuccessfulAuthentication 验证失败时候调用的方法
      *
      * @param request
      * @param response
@@ -214,5 +217,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.error("authentication failed, reason: " + failed.getMessage());
+        ResponseUtil.out(403, ResultUtil.failure(ErrorCodeConstants.PERMISSION_DENY,
+                failed.getMessage()));
     }
 }
